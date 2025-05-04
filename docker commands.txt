@@ -1,0 +1,75 @@
+Docker file:
+
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Copy only requirements.txt first for better layer caching
+COPY requirements.txt .
+
+# Install dependencies with explicit handling of langchain-core version
+RUN pip install --upgrade pip && \
+    # Install langchain-core first with the compatible version
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY . .
+
+EXPOSE 8000
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+
+docker build --no-cache -t fastapi-rag-new .
+docker run -p 8000:8000 fastapi-rag-new 
+
+
+testing:
+curl -X 'POST' \
+>   'http://localhost:8000/rag' \
+>   -H 'accept: text/plain' \
+>   -H 'Content-Type: multipart/form-data' \
+>   -F 'query=extract key case details in 2 lines' \
+>   -F 'file=@data/sample.pdf;type=application/pdf'
+
+docker logs fastapi-rag-new
+
+
+
+
+docker run --rm rag-debug1
+
+
+Create git repo:
+git config --global user.name "udaybhaskarDS"
+udaybhaskar@91
+git config --global user.email "udaydataanalytics@gmail.com"
+
+
+go to proj path
+git init
+git add .
+git commit -m "updated"
+git push origin main
+
+
+Azure part:----
+Create container registry:
+in that substriction name
+resource group -create new
+registry name
+location:central us
+review and create 
+once created that container registry-accesskeys
+-copy login server
+-enble admin user
+- get username
+copy password(frst one)
+
+search web app for container
+
+
+
+
+
+
